@@ -8,6 +8,10 @@
 更改pom.xml => 配置版本为1.5.9RELEASE 以及更改groupId,artifactId,name,description
 先获取git对应的模板，然后在把我们的放进去，再用IDEA打开
 
+查找pom的Dependence：
+首先，现将dependence放进pom文件中去。
+寻找版本号：https://mvnrepository.com/search?q=shiro-core => 对应的artifact名即可
+
 3. git使用
 git init才行, 这是远程进入，才会进入git状态, 将learnJava初始化
 如果是第一次，还需要配置用户名和密码，最好gitee和git配置的一样
@@ -33,3 +37,72 @@ Target指定作用的类，ElementType.Type
 Rentation设置对应的注解作用范围 RentationPolicy.SOURCE
 定义一个属性值value => 默认值为""
 
+5. 并发模拟
+    1. Postman模拟并发
+        （1）首先新增一个测试的controller,添加lombok,然后添加Slf4j注解 => 运行
+        打开Postman, 发送请求，history可以查看历史记录
+        右上方添加环境变量，localhost => 变量名称：host => http://localhost:8080/
+
+        （2）并发测试： collection => 新增一个Concurrency
+        Save => 将测试的请求保存到collection之中 => 右边一个小箭头，点击run
+        然后配置请求次数和请求的延迟时间delay => 运行获取结果
+
+    2. Apache AB压力测试工具
+        ab -n 1000 -c 50 http://localhost:8080/test
+        -n 请求数 -c 并发数
+        结果： Total transferred：返回的数据总和
+              HTML transferred: 返回的正文长度
+              Requests per second: 吞吐率
+    3. JMeter
+        安装：brew install jmeter
+        安装路径为：/usr/local/Cellar/jmeter/5.4.1/bin
+        运行：jmeter
+        配置界面显示：Options -> look and feel -> Metal
+        Test Plan -> Thread Group -> Name,Number of users,持续时间,循环次数多次20次
+        add -> sampler -> HTTP请求 配置端口
+        add -> Listener -> graph result, view results tree 可以查看运行时的结果
+        打开日志文件：Options -> log viewer
+
+    4. 代码方式
+        (1)CountDownLatch阻塞线程 -> T1,T2,T3都到达后再放行
+        (2)Semaphore 信号量 -> 允许的并发数
+
+        ExecutorService => Executors.newCachedThreadPool(); execute()
+        Semaphore => semaphore.acquire() .release()
+        CountDownLatch => countDown(), await()等待 shutdown()
+        lambda表达式 => 就是一个匿名的函数，进行需要的函数操作
+
+6. 线程安全性
+多个线程不管以何种方式访问某个类，并且在主调代码中不需要进行同步，都能表现正确的行为。
+
+7. 非阻塞同步
+先进行操作，如果未发生其他线程争用的情况就操作成功，否则重试，这种方案不需要阻塞
+乐观的锁，但是不适合高强度竞争的情况
+    1. Atomic包，原子性 AutomicInteger => number.getAndIncrement()
+       源码：
+       public final int getAndAddInt(Object var1, long var2, int var4) {
+       int var5; do { var5 = this.getIntVolatile(var1, var2); }
+       while(!this.compareAndSwapInt(var1, var2, var5, var5 + var4));
+       return var5;
+       }
+
+    2. AtomicLong  .incrementAndGet() 竞争不高的情况使用，例如全局的序列号生成
+       LongAdder  .increment()  竞争较高时使用，采取hash算法,将对单个变量的CAS操作分散为多个变量的CAS,但是可能有误差
+       AtomicReference<Integer> ... 一个综合类，可以结合使用 compareAndSet
+       AtomicIntegerFieldUpdater<AtomicExample5> 原子性去更新某个类的实例字段（必须以volatile修饰的非static字段）
+            compareAndSet(example5,100,120)
+
+
+
+
+    3. 原理:
+       CAS：CompareAndSwap,比较并交换。
+       CAS 指令需要有 3 个操作数，分别是 内存地址 V、旧的预期值 A 和新值 B。当执行操作时，只有当 V 的值等于 A，才将 V 的值更新为 B。
+
+
+
+
+
+
+8. Java内存模型
+三大特性：原子性，可见性，有序性
