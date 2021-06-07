@@ -67,7 +67,7 @@ Rentation设置对应的注解作用范围 RentationPolicy.SOURCE
         (1)CountDownLatch阻塞线程 -> T1,T2,T3都到达后再放行
         (2)Semaphore 信号量 -> 允许的并发数
 
-        ExecutorService => Executors.newCachedThreadPool(); execute()
+        ExecutorService => Executors.newCachedThreadPool(); execute( Runnable，不接受参数 )
         Semaphore => semaphore.acquire() .release()
         CountDownLatch => countDown(), await()等待 shutdown()
         lambda表达式 => 就是一个匿名的函数，进行需要的函数操作
@@ -91,14 +91,15 @@ Rentation设置对应的注解作用范围 RentationPolicy.SOURCE
        AtomicReference<Integer> ... 一个综合类，可以结合使用 compareAndSet
        AtomicIntegerFieldUpdater<AtomicExample5> 原子性去更新某个类的实例字段（必须以volatile修饰的非static字段）
             compareAndSet(example5,100,120)
-
-
-
+       AtomicLongArray: 数组，选择性更新索引对应的值 => array.addAndGet()
+       AtomicBoolean: 让某个程序只执行一次
 
     3. 原理:
        CAS：CompareAndSwap,比较并交换。
        CAS 指令需要有 3 个操作数，分别是 内存地址 V、旧的预期值 A 和新值 B。当执行操作时，只有当 V 的值等于 A，才将 V 的值更新为 B。
 
+    4. ABA问题：如果一个变量初次读取的时候是 A 值，它的值被改成了 B，后来又被改回为 A，那 CAS 操作就会误认为它从来没有 被改变过。
+       AtomicStampedReference：带有标记（stamp的值），控制变量值的版本，解决ABA问题 1，2，3版本
 
 
 
