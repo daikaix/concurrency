@@ -1,0 +1,35 @@
+1. 环境初始化
+登录Gitee, 选择仓库创建,仓库名称concurrency,初始化仓库 设置语言为Java,私有仓库,以READme进行初始化
+获取到对应的项目地址：https://gitee.com/dai-kaixuan/concurrency
+
+2. spring Initialize
+配置 com.mmall.concurrency => war,java8
+更改IDEA的Maven库为 1.6版本的
+更改pom.xml => 配置版本为1.5.9RELEASE 以及更改groupId,artifactId,name,description
+先获取git对应的模板，然后在把我们的放进去，再用IDEA打开
+
+3. git使用
+git init才行, 这是远程进入，才会进入git状态, 将learnJava初始化
+如果是第一次，还需要配置用户名和密码，最好gitee和git配置的一样
+git clone 是拉取数据
+
+添加gitignore 设置忽略掉上传的git数据
+
+然后在进行创作的时候会自动将数据放入！！！
+在Git工具栏，可以看到Git Commit的不同之处以及需要commit的地方， 也可以将需要的数据直接拉下来
+git add xxx
+git status
+git commit -am 'init'
+
+还可以查看历史记录以及返回原版
+
+git push进行提交
+
+4. 删除并创建自己的初始化类,并添加一些需要的Annotation注解
+删除自带的test和application方法，创建自己的application方法，然后运行即可
+
+annotation包 => ThreadSafe注解
+Target指定作用的类，ElementType.Type
+Rentation设置对应的注解作用范围 RentationPolicy.SOURCE
+定义一个属性值value => 默认值为""
+
