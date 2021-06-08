@@ -139,9 +139,10 @@ Lock：可中断锁，多样化同步，竞争激烈维持常态
 
 11. 线程封闭
     1. 堆栈封闭：局部变量，无并发问题
-
-
-
+    2. ThreadLocal 线程封闭：用map实现线程的封闭, 每个线程拥有一个自己的实例变量
+       实例：声明一个filter，Interceptor, application之中定义实现Bean，先进行filter，然后对请求执行前后执行interceptor
+            threadLocal创建一个线程封闭的变量, 调用其中的add，remove方法
+       实例：数据库的jdbc的connection对象
 
 
 12. Java内存模型
