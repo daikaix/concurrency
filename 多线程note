@@ -11,6 +11,7 @@
 查找pom的Dependence：
 首先，现将dependence放进pom文件中去。
 寻找版本号：https://mvnrepository.com/search?q=shiro-core => 对应的artifact名即可
+option+enter => Maven search => 获取需要的包
 
 3. git使用
 git init才行, 这是远程进入，才会进入git状态, 将learnJava初始化
@@ -67,7 +68,7 @@ Rentation设置对应的注解作用范围 RentationPolicy.SOURCE
         (1)CountDownLatch阻塞线程 -> T1,T2,T3都到达后再放行
         (2)Semaphore 信号量 -> 允许的并发数
 
-        ExecutorService => Executors.newCachedThreadPool(); execute( Runnable，不接受参数 )
+        ExecutorService => Executors.newCachedThreadPool(); execute( Runnable，bda表达式不接受参数，直接获取参数需要是final类型)
         Semaphore => semaphore.acquire() .release()
         CountDownLatch => countDown(), await()等待 shutdown()
         lambda表达式 => 就是一个匿名的函数，进行需要的函数操作
@@ -138,7 +139,7 @@ Lock：可中断锁，多样化同步，竞争激烈维持常态
        ImmutableList.of() 多个数据进行初始化
 
 11. 线程封闭
-    1. 堆栈封闭：局部变量，无并发问题
+    1. 堆栈封闭：局部变量，无并发问题，在一个方法内部
     2. ThreadLocal 线程封闭：用map实现线程的封闭, 每个线程拥有一个自己的实例变量
        实例：声明一个filter，Interceptor, application之中定义实现Bean，先进行filter，然后对请求执行前后执行interceptor
             threadLocal创建一个线程封闭的变量, 调用其中的add，remove方法
@@ -166,3 +167,9 @@ Java 内存模型是通过在变量修改后将新值同步回主内存，在变
     2. 一个 unlock 操作先行发生于后面对同一个锁的 lock 操作
     3. volatile 变量规则，对一个 volatile 变量的写操作先行发生于后面对这个变量的读操作。
     4. ...
+
+13. 常见线程不安全的类
+    1. StringBuilder是线程不安全的，需要使用StringBuffer这个线程安全的类。
+    应用字符串拼接时，StringBuffer添加了synchronized关键字，不考虑多线程使用StringBuilder即可.
+    2. 日期转换，SimpleDateFormat("yyyyMMDD") 多线程是会抛出异常，解决方案是堆栈封闭，作为局部变量声明
+    可以使用DateTimeFormatter,DataTime
