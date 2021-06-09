@@ -146,6 +146,22 @@ Lock：可中断锁，多样化同步，竞争激烈维持常态
        实例：数据库的jdbc的connection对象
 
 
+12. 同步容器
+    1. ArrayList -> Vector,Stack
+       同步容器不一定线程安全：保证一个时间只有一个线程能够访问，但可能会出现数组越界异常。
+
+    2. HashMap -> HashTable(key,value 不能为null)
+       一个同步容器
+    3. Collections.synchronizedList(Lists.newArrayList())
+       Collections.synchronizedSet(new HashSet<>()) 以及map
+    4. 使用迭代器遍历集合时，最好不要使用remove操作，最好先打上标记再删除。
+       删除后会导致 mod值不同，报异常
+
+
+
+
+
+
 12. Java内存模型
 三大特性：原子性，
 
@@ -174,6 +190,6 @@ Java 内存模型是通过在变量修改后将新值同步回主内存，在变
     2. 日期转换，SimpleDateFormat("yyyyMMDD") 多线程是会抛出异常，解决方案是堆栈封闭，作为局部变量声明
     可以使用DateTimeFormatter,DataTime
     3. ArrayList,HashSet,HashMap线程不安全
-       采用对应的线程安全类：
+       采用对应的同步容器和并发容器
     4. 先检查再执行这种方式：
         if(condition(a)) { handle(a); } => CAS是底层保证两个操作的原子性
