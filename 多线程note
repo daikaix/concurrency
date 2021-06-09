@@ -117,6 +117,7 @@ synchronized:（不可中断锁，适合竞争不激烈)
     实例：向之前的计数方法，可以使用synchronized修饰静态的add方法，这样add操作就具有一致性了
 
 Lock：可中断锁，多样化同步，竞争激烈维持常态
+    1. ReentrantLock
 
 9. 安全发布对象  （在对象构建之前不能发布对象，可变对象需要安全发布），结合互斥同步实现多线程安全发布对象
 不安全发布：对象是不安全的，可以在外部被修改，
@@ -153,16 +154,51 @@ Lock：可中断锁，多样化同步，竞争激烈维持常态
     2. HashMap -> HashTable(key,value 不能为null)
        一个同步容器
     3. Collections.synchronizedList(Lists.newArrayList())
-       Collections.synchronizedSet(new HashSet<>()) 以及map
+       Collections.synchronizedSet(new HashSet<>())
+       Collections.synchronizedMap
     4. 使用迭代器遍历集合时，最好不要使用remove操作，最好先打上标记再删除。
        删除后会导致 mod值不同，报异常
 
+13. 并发容器 J.U.C
+    ArrayList
+    1. CopyOnWriteArrayList => 先在复制的上面写数组，然后将数组指向复制的地方，然后将另一个数据重置为这个复制的数组
+       写操作就会复制，且不能实时读，适合读多写少的场景；（读写分离，最终一致性，开辟空间）
+    HashSet,TreeSet
+    1. CopyOnWriteArraySet
+    2. ConcurrentSkipListSet (自然排序) 并发进行插入删除具有原子性, 批量操作不保证原子性
+
+    HashMap,TreeMap
+    1. ConcurrentHashMap => 针对读的操作进行大量的优化
+    2. ConcurrentSkipListMap => 跳表底层实现，可以支持更高的并发
+
+14. AQS => AbstractQueuedSynchronizer
+    本质：双向列表，队列 => Sync queue( 包括head节点和tail节点 ），Condition queue，单向链表
+         使用Node实现FIFO队列，构建锁或者其他同步装置基础框架 int表示状态，1表示有锁，大于1表示锁的数量
+         通过继承使用，实现acquire和release操作状态
+         可以同时实现排它锁和共享锁
+
+    线程在CLS队列之中，首先尝试获取锁，没有就封装起来放进Sync队列之中，循环尝试获取锁，
+
+    1. CountDownLatch，阻塞进程await()，countDown计数器减一，然后同时释放
+       实例：指定时间内完成的数量，在await()中指定等待的时间
+
+    2. Semaphore,控制同一时间并发的数目
+       acquire(),release()  拿多个许可，acquire(3)
+       多出的请求直接丢弃tryAcquire(),可以获取多个许可，可以等待一段时间，
+       semaphore.tryAcquire(2,1, TimeUnit.SECONDS)
+
+    3. CyclicBarrier,循环屏障，阻塞进程，多个线程循环等待直到准备完成
+       同步辅助类，进入等待状态，计数器加一，达到设置的初始值，线程会被唤醒
+
+    4. ReentrantLock
+
+    5. Condition
+
+    6. FutureTask
 
 
 
-
-
-12. Java内存模型
+14. Java内存模型
 三大特性：原子性，
 
 可见性：指当一个线程修改了共享变量的值，其它线程能够立即得知这个修改。
@@ -184,7 +220,7 @@ Java 内存模型是通过在变量修改后将新值同步回主内存，在变
     3. volatile 变量规则，对一个 volatile 变量的写操作先行发生于后面对这个变量的读操作。
     4. ...
 
-13. 常见线程不安全的类
+15. 常见线程不安全的类
     1. StringBuilder是线程不安全的，需要使用StringBuffer这个线程安全的类。
     应用字符串拼接时，StringBuffer添加了synchronized关键字，不考虑多线程使用StringBuilder即可.
     2. 日期转换，SimpleDateFormat("yyyyMMDD") 多线程是会抛出异常，解决方案是堆栈封闭，作为局部变量声明
