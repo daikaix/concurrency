@@ -76,6 +76,14 @@ Rentation设置对应的注解作用范围 RentationPolicy.SOURCE
 6. 线程安全性
 多个线程不管以何种方式访问某个类，并且在主调代码中不需要进行同步，都能表现正确的行为。
 
+new Thread: 新建线程性能差，缺乏更多功能
+线程池的好处：ThreadPoolExecutor
+    corePoolSize: 核心线程数量
+    maximumPoolSize: 线程最大线程数
+
+
+
+
 7. 非阻塞同步
 先进行操作，如果未发生其他线程争用的情况就操作成功，否则重试，这种方案不需要阻塞
 乐观的锁，但是不适合高强度竞争的情况
@@ -205,6 +213,7 @@ Lock：可中断锁，多样化同步，竞争激烈维持常态
 
        Lock = new ReentrantLock()  lock(),unlock()
        lockInterruptibly()
+
        Condition的使用：reentrantLock.newCondition()
        condition.await() 是锁的释放
        condition.signalAll() 发送信号，表示线程2已经完成，线程1被放在队列之中
@@ -214,10 +223,33 @@ Lock：可中断锁，多样化同步，竞争激烈维持常态
        StampedLock: 乐观锁，认为写操作不会影响读操作
        long stamp = lock.writeLock() => lock.unlock(stamp)
 
-    5. Condition
-
     6. FutureTask
+       实现线程，继承Thread,实现run方法，继承Runnable接口，重写run方法
 
+       1. Callable可以获取返回结果,重写call方法
+           Future接口，监视目标线程的执行，获取返回值结构
+           ExecutorService service = Executors.newCachedThreadPool();
+           Future<String> future = service.submit(new MyCallable());
+       2. FutureTask实现, 把之前的都封装起来了
+           new FutureTask<String>(Runnable)  task.get()
+
+    7. Fork/join框架
+       工作窃取算法，把子任务分在不同的队列中，窃取从双端队列的尾部去拿任务进行执行
+       new ForkJoinTaskExample(1,100) => forkJoinPool.submit(task)
+       重写compute算法，new ForkJoinTaskExample(start, middle)
+       leftTask.fork() .join()
+    8. BlockingQueue 阻塞队列,实现了自动等待等功能
+       队列满时，进行入队操作就会阻塞。 队列空时，进行出队列操作就会阻塞。
+       用于生产者和消费者的场景。
+       ThrowException: 不能执行立马返回异常
+       Special Value: 返回特殊值
+       Time out: 阻塞指定时间
+
+       ArrayBlockingQueue: 先进先出的方式
+       DelayQueue:
+       LinkedBlockingQueue: 无边界的
+       PriorityBlockingQueue: 允许插入空对象
+       SynchronousQueue:
 
 
 14. Java内存模型
