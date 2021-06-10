@@ -115,6 +115,7 @@ synchronized:（不可中断锁，适合竞争不激烈)
        作用在类上，分别使用运行，依然有锁的效果
 
     实例：向之前的计数方法，可以使用synchronized修饰静态的add方法，这样add操作就具有一致性了
+    原理：在类上声明了一个变量，用来表明该实例|类对应的信号量，不可同时访问
 
 Lock：可中断锁，多样化同步，竞争激烈维持常态
     1. ReentrantLock
@@ -193,6 +194,25 @@ Lock：可中断锁，多样化同步，竞争激烈维持常态
        声明时还可以指定一个lambda函数，在线程等待完毕后先执行该操作。
 
     4. ReentrantLock
+       (1)可重入锁，synchronized也是可重入锁
+       (2)锁的实现，基于代码实现，synchronized基于JVM实现
+       (3)性能，差不多，synchronized使用了自旋锁和偏向锁
+       功能，需要自己声明，
+       不同点：(需要实现下面三个功能)
+       (1)可以指定公平锁和非公平锁，
+       (2)提供了Condition类，分组唤醒线程。
+       (3)提供能够中断等待锁的线程的机制，lock.lockInterruptibly()
+
+       Lock = new ReentrantLock()  lock(),unlock()
+       lockInterruptibly()
+       Condition的使用：reentrantLock.newCondition()
+       condition.await() 是锁的释放
+       condition.signalAll() 发送信号，表示线程2已经完成，线程1被放在队列之中
+
+    5. ReentrantReadWriteLock: 没有读写锁的情况下才能取得写锁，实现多线程读取。
+       悲观读取，认为一定会导致读操作的结果修改
+       StampedLock: 乐观锁，认为写操作不会影响读操作
+       long stamp = lock.writeLock() => lock.unlock(stamp)
 
     5. Condition
 
