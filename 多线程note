@@ -77,11 +77,33 @@ Rentation设置对应的注解作用范围 RentationPolicy.SOURCE
 多个线程不管以何种方式访问某个类，并且在主调代码中不需要进行同步，都能表现正确的行为。
 
 new Thread: 新建线程性能差，缺乏更多功能
-线程池的好处：ThreadPoolExecutor
+（1）线程池的好处：ThreadPoolExecutor
     corePoolSize: 核心线程数量
     maximumPoolSize: 线程最大线程数
+    workQueue: 阻塞队列，存储等待执行的任务，对线程运行过程产生重大影响
 
+    keepAliveTime: 没有任务执行时最多保持多久时间
+    unit: keepAliveTime的时间单位
+    threadFactory: 线程工厂，用来创建线程
+    rejectHandler: 拒绝处理任务的策略  直接抛出异常，丢弃任务
 
+（2）线程池的状态：
+    running，shutdown, stop(不接受新任务）,TIDYING,
+    execute(), submit() 提交任务，提交任务返回结果
+    shutdown() 关闭线程池，等任务都执行完
+    shutdownNow() 关闭线程池，不等待线程执行完毕
+
+（3）常用方法：
+    getTaskCount(): 线程池已执行和未执行的任务总数
+    getCompletedTaskCount():
+    getPoolSize()
+    getActiveCount()
+（4）直接声明：
+    newCachedThreadPool()
+    newFixedThreadPool()
+    newScheduledThreadPool()
+（5）线程池的合理配置
+    NCPU+1, 2*NCPU
 
 
 7. 非阻塞同步
